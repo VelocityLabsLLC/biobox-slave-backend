@@ -1,0 +1,28 @@
+version: '3.4'
+
+services:
+  biobox-slave-backend:
+    network_mode: host
+    privileged: true
+    image: codebdocker/biobox-slave-backend
+    environment:
+      NODE_ENV: production
+    volumes:
+      - /home/pi/Biobox/TrialDataCSVs:/usr/app/dist/devicedata/TrialDataCSVs
+    restart: unless-stopped
+  biobox-slave-file-transfer-service:
+    network_mode: host
+    image: codebdocker/biobox-slave-file-transfer-service
+    environment:
+      PORT: 3001
+      FILE_DIRECTORY: TrialDataCSVs
+      NODE_ENV: production
+    volumes:
+      - /home/pi/Biobox/TrialDataCSVs:/usr/app/TrialDataCSVs
+    restart: unless-stopped
+  biobox-slave-frontend:
+    container_name: biobox-slave-frontend
+    image: codebdocker/biobox-slave-frontend
+    ports:
+      - "80:80"
+    restart: unless-stopped
